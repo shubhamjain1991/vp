@@ -16,9 +16,9 @@
 * Postman (for manually testing services)
 
 # Frameworks
-* Spring Framework > 4
-* Hibernate Framework > 5
-* Redis (an in-memory-cache)
+* Spring Framework >= 4
+* Hibernate Framework >= 5
+* Spring Data Redis (an in-memory-cache)
 
 # Project Configuration
 * Cloning the repository in to local.
