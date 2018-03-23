@@ -6,6 +6,9 @@
 	version="2.0">
 
 	<persistence-unit name="spring-jpa-unit">
+	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+	<class>com.vp.enity.CustomerProfile</class>
+	<class>com.vp.enity.MessageCode</class>
 	</persistence-unit>
 
 </persistence>

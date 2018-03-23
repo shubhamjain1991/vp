@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
       http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
@@ -9,71 +9,109 @@
       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
 	<!-- Load More Than One Property File -->
-	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath:application.properties</value>
 				<value>classpath:db.properties</value>
+				<value>classpath:log4j.properties</value>
+				<value>classpath:redis.properties</value>
 			</list>
 		</property>
 	</bean>
 
-	<!-- to indicate that the application is annotation driven and base package for the jpa repositories scan -->
+	<!-- to indicate that the application is annotation driven and base package 
+		for the jpa repositories scan -->
 	<context:annotation-config />
 	<jpa:repositories base-package="com.vp.dao" />
 	<context:component-scan base-package="com.vp.controller" />
-	<!-- This is necessary to process the Persistence Unit, Persistence Context annotations and for injecting JPA related resources -->
-	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+	<context:component-scan base-package="com.vp.service" />
+	<!-- This is necessary to process the Persistence Unit, Persistence Context 
+		annotations and for injecting JPA related resources -->
+	<bean
+		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName"
-			value="java:comp/env/jdbc/${jndi.master}" />
+		<property name="jndiName" value="java:comp/env/jdbc/${jndi.master}" />
 	</bean>
-	
+
 	<bean id="slaveDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName"
-			value="java:comp/env/jdbc/${jndi.slave}" />
+		<property name="jndiName" value="java:comp/env/jdbc/${jndi.slave}" />
+	</bean>
+
+	<!-- EntityManagerFactory which lists the various JPA related properties/resources -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="spring-jpa-unit" />
+		<property name="dataSource" ref="dataSource" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="true" />
+			</bean>
+		</property>
+		<property name="jpaPropertyMap">
+			<map>
+				<entry key="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
+				<entry key="hibernate.hbm2ddl.auto" value="create" />
+				<entry key="hibernate.format_sql" value="true" />
+			</map>
+		</property>
 	</bean>
 
 	<!-- ransaction manager for scoping/controlling the transactions -->
-  	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-      	<property name="entityManagerFactory" ref="entityManagerFactory" />
-  	</bean>
-  	<tx:annotation-driven transaction-manager="transactionManager" />
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
 
-	<!-- EntityManagerFactory which lists the various JPA related properties/resources -->
-	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-      <property name="persistenceUnitName" value="spring-jpa-unit" />
-      <property name="dataSource" ref="dataSource" />
-      <property name="jpaVendorAdapter">
-          <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-              <property name="showSql" value="true" />
-          </bean>
-      </property>
-      <property name="jpaPropertyMap">
-          <map>
-              <entry key="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
-              <entry key="hibernate.hbm2ddl.auto" value="validate" />
-              <entry key="hibernate.format_sql" value="true" />
-          </map>
-      </property>
-  </bean>
-  
-  <!-- bean for data source, where the properties of the MYSQL DB like url, username and password can be specified -->
-  <!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-      <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-      <property name="url" value="jdbc:mysql//localhost:3306/studentEnrollment" />
-      <property name="username" value="include username" />
-      <property name="password" value="include password" />
-  </bean> -->
-  
-  
-  <!-- Application Beans -->
-  <bean id="init" class="com.vp.init.Init" init-method="initialize">
+
+	<!-- For Redis Cache -->
+	<bean id="jedisConnFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		p:pool-config-ref="jedisPoolConfig" p:use-pool="true">
+		<property name="hostName" value="${redis.hostName}" />
+		<property name="port" value="${redis.port}" />
+	</bean>
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="200" />
+		<property name="maxIdle" value="50" />
+		<property name="maxWaitMillis" value="3000" />
+		<property name="testOnBorrow" value="false" />
+	</bean>
+	<bean id="stringSerializer"
+		class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+	<bean id="redisJsonTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+		p:connection-factory-ref="jedisConnFactory">
+		<property name="keySerializer" ref="stringSerializer" />
+		<property name="valueSerializer" ref="stringSerializer" />
+		<property name="hashKeySerializer" ref="stringSerializer" />
+		<property name="hashValueSerializer" ref="stringSerializer" />
+	</bean>
+	<bean id="redisMgr" class="com.vp.redis.RedisMgrImpl">
+		<property name="redisTemplate" ref="redisJsonTemplate" />
+	</bean>
+	<!-- For Redis Cache -->
+
+	<!-- Application Beans -->
+	<bean id="init" class="com.vp.init.Init" init-method="initialize">
 		<property name="env" value="${master.env}" />
 		<property name="masterDB" value="${jndi.master}" />
 		<property name="slaveDB" value="${jndi.slave}" />
-  </bean>
-  
+	</bean>
+	
+	<bean id="customerProfileDAO" class="com.vp.dao.CustomerProfileDAOImpl"/>
+	<bean id="customerProfileService" class="com.vp.service.CustomerProfileServiceImpl"/>
+	
+	<!-- Application Beans -->
+	
+	
+	<!-- bean for data source, where the properties of the MYSQL DB like url, 
+		username and password can be specified -->
+	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" /> <property 
+		name="url" value="jdbc:mysql//localhost:3306/studentEnrollment" /> <property 
+		name="username" value="include username" /> <property name="password" value="include 
+		password" /> </bean> -->
 
 </beans>
