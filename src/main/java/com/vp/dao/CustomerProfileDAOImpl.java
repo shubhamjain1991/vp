@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
+import com.vp.bean.RegistrartionFromBean;
 import com.vp.enity.CustomerProfile;
 
 @Repository
@@ -39,5 +40,42 @@ public class CustomerProfileDAOImpl implements CustomerProfileDAO{
 		}
 		return customerProfiles;
 	}
+
+	@Override
+	public boolean putCustomerDetails(RegistrartionFromBean registrartionFromBean) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean findByEmail(String email){
+		return false;
+	}	
+	public boolean findByMobile(String mobile){
+		return false;
+	}
+	public boolean findByUserName(String userName){
+		return false;
+	}
 	
+	@SuppressWarnings("finally")
+	public boolean findExistingUser(String email , String mobile , String userName){
+		Query query = null;
+		int dbResults = 0;
+		try{
+			LOGGER.info("Find Customer Profile for <---Email--->"+email + "<---mobile--->"+mobile+"<---userName--->"+userName);
+			query = entityManager.createQuery("SELECT cp FROM CustomerProfile cp where cp.cpEmail= "+email+" or cp.cpMobile = "+mobile+"or cp.cpUserName= "+userName);
+			dbResults = query.getResultList().size();
+			LOGGER.info("Record found for <---Email--->"+email + "<---mobile--->"+mobile+"<---userName--->"+userName);
+		}catch(Exception e){
+			e.printStackTrace();
+			LOGGER.info("Query Execution Failed "+query.toString());
+		}finally{
+			LOGGER.info("Record found for <---Email--->"+email + "<---mobile--->"+mobile+"<---userName--->"+userName);
+			if(dbResults>0){
+				return false;
+			}else{
+				return true;
+			}
+		}
+	}
 }

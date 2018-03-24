@@ -1,8 +1,12 @@
 package com.vp.validator;
 
+import java.util.HashSet;
+
 import com.vp.bean.CustomerResponseBean;
+import com.vp.bean.RegistrartionFromBean;
 import com.vp.constant.MessageConstants;
 import com.vp.enity.MessageCode;
+import com.vp.util.Common;
 
 public class CustomerValidator extends Validator{
 
@@ -19,32 +23,95 @@ public class CustomerValidator extends Validator{
 		return customerValidator;
 	}
 	
-	public CustomerResponseBean validateCustomerProfiles(String startIndex, String rowCount){
-		if(!isValidData(startIndex)){
-			return getCustomerResponseBean(false, MessageConstants.EMPTY_START_INDEX, new  CustomerResponseBean());
+	public RegistrartionFromBean validateLoginForm(RegistrartionFromBean registrartionFromBean){
+		HashSet<MessageCode> errorMessages = new HashSet<MessageCode>();
+		
+		if(!isValidData(registrartionFromBean.getCustomerPassword())){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_PASSWORD));
 		}
-		if(!isValidData(rowCount)){
-			return getCustomerResponseBean(false, MessageConstants.EMPTY_ROW_COUNT, new  CustomerResponseBean());
+		if(!isValidData(registrartionFromBean.getCustomerEmailAddress())){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_CUSTOMER_EMAIL));
 		}
-		if(!isValidStartIndex(startIndex)){
-			return getCustomerResponseBean(false, MessageConstants.INVALID_START_INDEX, new  CustomerResponseBean());
+		
+		if(errorMessages.isEmpty()){
+			
 		}
-		if(!isValidRowCount(rowCount)){
-			return getCustomerResponseBean(false, MessageConstants.INVALID_ROW_COUNT, new  CustomerResponseBean());
-		}
-		return new CustomerResponseBean();
+		return null;
+		
 	}
 	
-	public CustomerResponseBean getCustomerResponseBean(boolean isValid, String mcTitle, CustomerResponseBean customerResponseBean){
-		if(null == customerResponseBean){
-			customerResponseBean = new CustomerResponseBean();
+	public RegistrartionFromBean validateRegistrationForm (RegistrartionFromBean registrartionFromBean){
+		HashSet<MessageCode> errorMessages = new HashSet<MessageCode>();
+		if(!isValidData(registrartionFromBean.getCustomerFirstName())){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_NAME));
 		}
-		customerResponseBean.setValid(isValid);
+		if(!isValidData(registrartionFromBean.getCustomerPassword())){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_PASSWORD));
+		}
+		if(!isValidData(registrartionFromBean.getCustomerType())){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_CUSTOMER_TYPE));
+		}
+		if(!isValidCustomerType(registrartionFromBean.getCustomerType())){
+			errorMessages.add(getMessageCode(MessageConstants.INVALID_CUSTOMER_TYPE));
+		}
+		
+		if(!isValidData(registrartionFromBean.getCustomerEmailAddress())){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_CUSTOMER_EMAIL));
+		}
+		else if(isValidEmaiAddress(registrartionFromBean.getCustomerEmailAddress())){
+			errorMessages.add(getMessageCode(MessageConstants.INVALID_CUSTOMER_EMAIL));
+		}
+		
+		if(isValidData(registrartionFromBean.getCustomerMobileNumber())){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_CUSTOMER_MOBILE));
+		}
+		else if(isValidMobile(registrartionFromBean.getCustomerMobileNumber())){
+			errorMessages.add(getMessageCode(MessageConstants.INVALID_CUSTOMER_MOBILE));
+		}	
+		if(!isValidData(registrartionFromBean.getCustomerUserName())){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_USERNAME));
+		}
+		if(errorMessages.isEmpty()){
+			return (RegistrartionFromBean) getObjectBean(false, errorMessages, new Common());
+		}
+		return null;
+	}
+	
+	public CustomerResponseBean validateCustomerProfiles(String startIndex, String rowCount){
+		HashSet<MessageCode> errorMessages = new HashSet<MessageCode>();
+		if(!isValidData(startIndex)){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_START_INDEX));
+			//return (CustomerResponseBean) getObjectBean(false, MessageConstants.EMPTY_START_INDEX, new  Common());
+		}
+		if(!isValidData(rowCount)){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_ROW_COUNT));
+			//return (CustomerResponseBean) getObjectBean(false, MessageConstants.EMPTY_ROW_COUNT, new  Common());
+		}
+		if(!isValidStartIndex(startIndex)){
+			errorMessages.add(getMessageCode(MessageConstants.INVALID_START_INDEX));
+			//return (CustomerResponseBean) getObjectBean(false, MessageConstants.INVALID_START_INDEX, new  Common());
+		}
+		if(!isValidRowCount(rowCount)){
+			errorMessages.add(getMessageCode(MessageConstants.INVALID_ROW_COUNT));
+			//return (CustomerResponseBean) getObjectBean(false, MessageConstants.INVALID_ROW_COUNT, new  Common());
+		}
+		if(!errorMessages.isEmpty()){
+			return (CustomerResponseBean) getObjectBean(false, errorMessages, new Common());
+		}
+		return null;
+	}
+	
+	public MessageCode getMessageCode(String mcTitle){
 		MessageCode messageCode = new MessageCode();
 		messageCode.setMcTitle(mcTitle);
 		messageCode.setMcDesc(mcTitle);
-		customerResponseBean.setMessageCode(messageCode);
-		return customerResponseBean;
+		return messageCode;
+	}
+	
+	public Common getObjectBean(boolean isValid, HashSet<MessageCode> errors, Common common){
+		common.setValid(isValid);
+		common.setMessageCode(errors);
+		return common;
 	}
 	
 	

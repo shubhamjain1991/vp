@@ -5,11 +5,12 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.vp.util.JsonConverter;
 
-@Service("redisMgr")
+@Component
 public class RedisMgrImpl implements RedisMgr {
 
 	private static final Logger log = Logger.getLogger(RedisMgrImpl.class);

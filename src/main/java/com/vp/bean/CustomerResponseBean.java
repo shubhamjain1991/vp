@@ -2,15 +2,16 @@ package com.vp.bean;
 
 import java.io.Serializable;
 import java.util.List;
-import com.vp.enity.CustomerProfile;
-import com.vp.enity.MessageCode;
 
-public class CustomerResponseBean implements Serializable{
+import com.vp.enity.CustomerProfile;
+import com.vp.util.Common;
+
+public class CustomerResponseBean extends Common implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	private boolean isValid;
-	private MessageCode messageCode;
+	
+	
 	private String startIndex;
 	private String rowCount;
 	private List<CustomerProfile> customerProfiles;
@@ -18,29 +19,7 @@ public class CustomerResponseBean implements Serializable{
 	public CustomerResponseBean(){
 		super();
 	}
-
-	public CustomerResponseBean(boolean isValid, MessageCode messageCode) {
-		super();
-		this.isValid = isValid;
-		this.messageCode = messageCode;
-	}
-
-	public boolean isValid() {
-		return isValid;
-	}
-
-	public void setValid(boolean isValid) {
-		this.isValid = isValid;
-	}
-
-	public MessageCode getMessageCode() {
-		return messageCode;
-	}
-
-	public void setMessageCode(MessageCode messageCode) {
-		this.messageCode = messageCode;
-	}
-
+	
 	public String getStartIndex() {
 		return startIndex;
 	}

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.vp.bean.CustomerResponseBean;
+import com.vp.bean.RegistrartionFromBean;
 import com.vp.service.CustomerProfileService;
 import com.vp.validator.CustomerValidator;
 
@@ -32,6 +33,37 @@ public class CsutomerController {
 		}
 		responseBean = customerProfileService.customerProfiles(Integer.parseInt(startIndex), Integer.parseInt(rowCount));
 		return new ResponseEntity<CustomerResponseBean>(responseBean,HttpStatus.OK);
+	}
+	@RequestMapping("/createProfile")
+	public ResponseEntity<RegistrartionFromBean> putCustomerProfile(RegistrartionFromBean registrartionFromBean){
+		
+		LOGGER.info("Validating the customer Registrartion form");
+		RegistrartionFromBean responseBean = CustomerValidator.getInstance().validateRegistrationForm(registrartionFromBean);
+		if(responseBean != null){
+			return new ResponseEntity<RegistrartionFromBean>(responseBean , HttpStatus.OK);
+		}
+		LOGGER.info("Inserting the customer Registrartion form");
+		responseBean = customerProfileService.putCustomerDetais(registrartionFromBean);
+		return new ResponseEntity<RegistrartionFromBean>(responseBean , HttpStatus.OK);
+	}
+	@RequestMapping("/updateProfile")
+	public ResponseEntity<RegistrartionFromBean> updateCustomerProfile(RegistrartionFromBean registrartionFromBean){
+		LOGGER.info("Validating the customer Registrartion form");
+		RegistrartionFromBean responseBean = CustomerValidator.getInstance().validateRegistrationForm(registrartionFromBean);
+		if(responseBean != null){
+			return new ResponseEntity<RegistrartionFromBean>(responseBean , HttpStatus.OK);
+		}
+		return null;	
+	}
+	
+	@RequestMapping("/deleteProfile")
+	public ResponseEntity<RegistrartionFromBean> deleteCustomerProfile(RegistrartionFromBean registrartionFromBean){
+		return null;	
+	}
+	
+	@RequestMapping("/login")
+	public ResponseEntity<RegistrartionFromBean> viewCustomerProfile(RegistrartionFromBean registrartionFromBean){
+		return null;	
 	}
 
 }
