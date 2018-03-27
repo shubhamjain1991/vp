@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.vp.bean.CustomerResponseBean;
@@ -17,7 +18,7 @@ import com.vp.enity.MessageCode;
 import com.vp.util.Common;
 import com.vp.validator.CustomerValidator;
 
-@Service
+@Component
 public class CustomerProfileServiceImpl implements CustomerProfileService {
 
 	@Autowired

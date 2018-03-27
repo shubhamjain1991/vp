@@ -1,18 +1,13 @@
 package com.vp.util;
 
 import java.util.HashSet;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import com.vp.enity.MessageCode;
 
 @Component
 public class Common  {
 	
 	private boolean isValid;
-	
-	@Autowired
 	private HashSet<MessageCode> messageCode;
 	
 	public boolean isValid() {
