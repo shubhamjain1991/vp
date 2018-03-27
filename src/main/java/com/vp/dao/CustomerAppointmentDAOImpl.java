@@ -3,8 +3,11 @@ package com.vp.dao;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.springframework.stereotype.Repository;
+
 import com.vp.bean.CustomerApplicationFormBean;
 
+@Repository
 public class CustomerAppointmentDAOImpl implements CustomerAppointmentDAO {
 	
 	@PersistenceContext
