@@ -2,6 +2,7 @@ package com.vp.validator;
 
 import java.util.HashSet;
 
+import com.vp.bean.CustomerApplicationFormBean;
 import com.vp.bean.CustomerResponseBean;
 import com.vp.bean.RegistrartionFromBean;
 import com.vp.constant.MessageConstants;
@@ -23,18 +24,34 @@ public class CustomerValidator extends Validator{
 		return customerValidator;
 	}
 	
+	public CustomerApplicationFormBean validateCustomerApplicationForm(CustomerApplicationFormBean customerApplicationFormBean){
+		HashSet<MessageCode> errorMessages = new HashSet<MessageCode>();
+		if(!isValidData(customerApplicationFormBean.getCauseOfMeeting())){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_MEETING_DESCRIPTION));
+		}
+		if(!isValidData(customerApplicationFormBean.getRequesterName())){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_REQUESTER_NAME));
+		}
+		if(!isValidInteger(customerApplicationFormBean.getTimeSlot())){
+			errorMessages.add(getMessageCode(MessageConstants.EMPTY_OR_INVALID_TIME_SLOT));
+		}
+		if(errorMessages.isEmpty()){
+			return (CustomerApplicationFormBean) getObjectBean(false, errorMessages, new Common());
+		}
+		return null;
+	}
+	
 	public RegistrartionFromBean validateLoginForm(RegistrartionFromBean registrartionFromBean){
 		HashSet<MessageCode> errorMessages = new HashSet<MessageCode>();
 		
 		if(!isValidData(registrartionFromBean.getCustomerPassword())){
 			errorMessages.add(getMessageCode(MessageConstants.EMPTY_PASSWORD));
-		}
+		} 
 		if(!isValidData(registrartionFromBean.getCustomerEmailAddress())){
 			errorMessages.add(getMessageCode(MessageConstants.EMPTY_CUSTOMER_EMAIL));
 		}
-		
-		if(errorMessages.isEmpty()){
-			
+		if(!errorMessages.isEmpty()){
+			return (RegistrartionFromBean) getObjectBean(false, errorMessages, new Common());
 		}
 		return null;
 		
@@ -71,7 +88,7 @@ public class CustomerValidator extends Validator{
 		if(!isValidData(registrartionFromBean.getCustomerUserName())){
 			errorMessages.add(getMessageCode(MessageConstants.EMPTY_USERNAME));
 		}
-		if(errorMessages.isEmpty()){
+		if(!errorMessages.isEmpty()){
 			return (RegistrartionFromBean) getObjectBean(false, errorMessages, new Common());
 		}
 		return null;
