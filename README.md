@@ -105,4 +105,32 @@ LOCAL :: 2018-03-20 17:29:13 [http-bio-8080-exec-2] (SampleController.java:22) -
 LOCAL :: 2018-03-20 17:29:13 [http-bio-8080-exec-2] (SampleController.java:23) - Slave DB :::: slave
 ```
 
+# Settin Up Server (using ubuntu)
+* For setting up production like server to test the application in real time.
+* Using below script we are installing maven and oracle java 8.
+```bash
+sudo apt install maven
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer
+```
+* For setting $JAVA_HOME path
+```bash
+sudo vim /etc/environment
+```
+Add line "JAVA_HOME=${your installed java derectory}" and save it.
 
+* Install apache-tomcat 
+```bash
+cd /mnt/production/
+wget http://www-eu.apache.org/dist/tomcat/tomcat-7/v7.0.85/bin/apache-tomcat-7.0.85.tar.gz 
+tar -xvzf apache-tomcat-7.0.85.tar.gz
+```
+
+* Install SSH for other machine to make tcp connection to the server
+```bash
+sudo apt install ssh
+sudo ufw allow 22
+sudo service ufw start
+sudo ufw enable
+```
