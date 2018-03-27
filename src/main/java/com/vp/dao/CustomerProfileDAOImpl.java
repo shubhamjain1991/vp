@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
+import com.vp.bean.CustomerApplicationFormBean;
 import com.vp.bean.RegistrartionFromBean;
 import com.vp.enity.CustomerProfile;
 
@@ -78,4 +79,22 @@ public class CustomerProfileDAOImpl implements CustomerProfileDAO{
 			}
 		}
 	}
+	
+	public CustomerProfile userLogin(String userName , String password){
+		Query query = null;
+		CustomerProfile customerProfile = null;
+		try{
+			LOGGER.info("Find Customer Profile for <---userName--->"+userName );
+			query = entityManager.createQuery("Select cp from CustomerProfile where cp.cpUserName= "+userName+"and cpPwd="+password);
+			customerProfile = (CustomerProfile) query.getResultList();	
+		}catch(Exception e){
+			e.printStackTrace();
+			LOGGER.info("Query Execution Failed "+query.toString());	
+		}finally{
+			LOGGER.info("Query Execution Success "+query.toString());
+		}
+		return customerProfile;
+	}
+
+	
 }

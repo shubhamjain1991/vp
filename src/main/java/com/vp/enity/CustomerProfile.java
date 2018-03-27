@@ -194,24 +194,33 @@ public class CustomerProfile implements Serializable{
 		this.cpIsUidValid = cpIsUidValid;
 	}
 
-	public String getCpIsMobileValid() {
-		return cpIsMobileValid;
+	public boolean getCpIsMobileValid() {
+		if(cpIsMobileValid.equalsIgnoreCase("yes"))
+		return true;
+		else
+			return false;
 	}
 
 	public void setCpIsMobileValid(String cpIsMobileValid) {
 		this.cpIsMobileValid = cpIsMobileValid;
 	}
 
-	public String getCpIsEmailValid() {
-		return cpIsEmailValid;
+	public boolean getCpIsEmailValid() {
+		if(cpIsEmailValid.equalsIgnoreCase("yes"))
+			return true;
+			else
+				return false;
 	}
 
 	public void setCpIsEmailValid(String cpIsEmailValid) {
 		this.cpIsEmailValid = cpIsEmailValid;
 	}
 
-	public String getCpIsActive() {
-		return cpIsActive;
+	public boolean getCpIsActive() {
+		if(cpIsActive.equalsIgnoreCase("yes"))
+			return true;
+			else
+				return false;
 	}
 
 	public void setCpIsActive(String cpIsActive) {

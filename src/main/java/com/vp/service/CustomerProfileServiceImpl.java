@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import com.vp.bean.CustomerApplicationFormBean;
 import com.vp.bean.CustomerResponseBean;
 import com.vp.bean.RegistrartionFromBean;
 import com.vp.constant.MessageConstants;
+import com.vp.dao.CustomerAppointmentDAO;
 import com.vp.dao.CustomerProfileDAO;
 import com.vp.enity.CustomerProfile;
 import com.vp.enity.MessageCode;
@@ -25,6 +27,8 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
 	
 	@Autowired
 	protected CustomerProfileDAO customerProfileDAO;
+	@Autowired
+	protected CustomerAppointmentDAO customerAppointmentDAO;
 	
 	@Override
 	public CustomerResponseBean customerProfiles(int startIndex, int rowCount) {
@@ -62,6 +66,47 @@ public class CustomerProfileServiceImpl implements CustomerProfileService {
 		}
 		
 		
+	}
+
+	@Override
+	public RegistrartionFromBean userLogin(RegistrartionFromBean registrartionFromBean) {
+
+		HashSet<MessageCode> messageCodes = new HashSet<MessageCode>();
+		CustomerProfile customerProfile = customerProfileDAO.userLogin(registrartionFromBean.getCustomerUserName(), registrartionFromBean.getCustomerPassword());
+		if(customerProfile!= null){
+			//Setting Details of User
+			if(( customerProfile.getCpIsEmailValid() || customerProfile.getCpIsMobileValid() ) && customerProfile.getCpIsActive()){
+			registrartionFromBean.setCustomerFirstName(customerProfile.getCpFirstName());
+			registrartionFromBean.setCustomerLastName(customerProfile.getCpLastName());
+			registrartionFromBean.setCustomerMobileNumber(customerProfile.getCpMobile()+"");
+			registrartionFromBean.setCustomerType(customerProfile.getCpType());
+			registrartionFromBean.setCustomerEmailAddress(customerProfile.getCpEmail());
+			messageCodes.add(CustomerValidator.getInstance().getMessageCode(MessageConstants.LOGIN_SUCCESSFULL));
+			return (RegistrartionFromBean) CustomerValidator.getInstance().getObjectBean(true, messageCodes, registrartionFromBean);
+			}else{
+				messageCodes.add(CustomerValidator.getInstance().getMessageCode(MessageConstants.PROFILE_NOT_ACTIVE));
+				return (RegistrartionFromBean) CustomerValidator.getInstance().getObjectBean(false, messageCodes, common);	
+			}
+			
+		}
+		messageCodes.add(CustomerValidator.getInstance().getMessageCode(MessageConstants.LOGIN_FAILURE));
+		 return (RegistrartionFromBean) CustomerValidator.getInstance().getObjectBean(false, messageCodes, common);
+	}
+	
+	@Override
+	public CustomerApplicationFormBean createCustomerAppointment(CustomerApplicationFormBean customerApplicationFormBean){
+		HashSet <MessageCode> messageCodes = new HashSet<MessageCode>();
+		CustomerValidator customerValidator = CustomerValidator.getInstance();
+		if(customerAppointmentDAO.isTimeSlotFree(customerApplicationFormBean.getTimeSlot(), customerApplicationFormBean.getServiceProviderId() , customerApplicationFormBean.getUserID())){
+			messageCodes.add(CustomerValidator.getInstance().getMessageCode(MessageConstants.TIME_SLOT_NOT_FREE));
+			return (CustomerApplicationFormBean) customerValidator.getObjectBean(false, messageCodes, customerApplicationFormBean);
+		}
+		if(customerAppointmentDAO.createCustomerAppointment(customerApplicationFormBean)){
+			messageCodes.add(CustomerValidator.getInstance().getMessageCode(MessageConstants.APPOINTMENT_SENT_TO_PROVIDER));
+			return (CustomerApplicationFormBean) customerValidator.getObjectBean(true, messageCodes, customerApplicationFormBean);
+		}
+		messageCodes.add(CustomerValidator.getInstance().getMessageCode(MessageConstants.INTERNAL_SERVER_ERROR));
+		return (CustomerApplicationFormBean) customerValidator.getObjectBean(false, messageCodes, customerApplicationFormBean);
 	}
 
 }

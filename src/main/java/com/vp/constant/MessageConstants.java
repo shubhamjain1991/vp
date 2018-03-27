@@ -29,5 +29,15 @@ public class MessageConstants {
 	public static String CUSTOMER_PROFILE_INSERTED_FAILURE = "CUSTOMER_PROFILE_INSERTED_FAILURE";
 	public static String CUSTOMER_USERNAME_EXISTS = "CUSTOMER_USERNAME_EXISTS";
 	public static String PROFILE_ALREADY_EXISTS = "PROFILE_ALREADY_EXISTS";
+	public static String LOGIN_SUCCESSFULL = "LOGIN_SUCCESSFULL";
+	public static String LOGIN_FAILURE = "LOGIN_FAILURE";
+	public static String PROFILE_NOT_ACTIVE = "PROFILE_NOT_ACTIVE";
+	
+	// Fields used for CustomerApplicationFromBean 
+	public static String EMPTY_OR_INVALID_TIME_SLOT = "EMPTY_TIME_SLOT";
+	public static String EMPTY_REQUESTER_NAME = "EMPTY_REQUESTER_NAME";
+	public static String EMPTY_MEETING_DESCRIPTION = "EMPTY_MEETING_DESCRIPTION";
+	public static String TIME_SLOT_NOT_FREE = "TIME_SLOT_NOT_FREE";
+	public static String APPOINTMENT_SENT_TO_PROVIDER = "APPOINTMENT_SENT_TO_PROVIDER";
 }
 

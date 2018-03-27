@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.vp.bean.CustomerApplicationFormBean;
 import com.vp.bean.CustomerResponseBean;
 import com.vp.bean.RegistrartionFromBean;
 import com.vp.service.CustomerProfileService;
@@ -34,6 +35,7 @@ public class CsutomerController {
 		responseBean = customerProfileService.customerProfiles(Integer.parseInt(startIndex), Integer.parseInt(rowCount));
 		return new ResponseEntity<CustomerResponseBean>(responseBean,HttpStatus.OK);
 	}
+	
 	@RequestMapping("/createProfile")
 	public ResponseEntity<RegistrartionFromBean> putCustomerProfile(RegistrartionFromBean registrartionFromBean){
 		
@@ -46,6 +48,7 @@ public class CsutomerController {
 		responseBean = customerProfileService.putCustomerDetais(registrartionFromBean);
 		return new ResponseEntity<RegistrartionFromBean>(responseBean , HttpStatus.OK);
 	}
+	
 	@RequestMapping("/updateProfile")
 	public ResponseEntity<RegistrartionFromBean> updateCustomerProfile(RegistrartionFromBean registrartionFromBean){
 		LOGGER.info("Validating the customer Registrartion form");
@@ -63,7 +66,25 @@ public class CsutomerController {
 	
 	@RequestMapping("/login")
 	public ResponseEntity<RegistrartionFromBean> viewCustomerProfile(RegistrartionFromBean registrartionFromBean){
-		return null;	
+		LOGGER.info("Validating the customer login form");
+		RegistrartionFromBean responseBean = CustomerValidator.getInstance().validateLoginForm(registrartionFromBean);
+		if(null!=responseBean){
+			LOGGER.info("customer login form details not valid");
+			return new ResponseEntity<RegistrartionFromBean>(responseBean , HttpStatus.OK);
+		}
+		return null;		
+	}
+	
+	@RequestMapping("/applicationForm")
+	public ResponseEntity<CustomerApplicationFormBean> createCustomerAppointment(CustomerApplicationFormBean customerApplicationFormBean){
+		CustomerApplicationFormBean responseBean = null;
+		LOGGER.info("Validating CustomerApplicationFrom");
+		responseBean = CustomerValidator.getInstance().validateCustomerApplicationForm(customerApplicationFormBean);
+		if(responseBean!=null){
+			return new ResponseEntity<CustomerApplicationFormBean>(responseBean , HttpStatus.OK);
+		} 
+		responseBean = customerProfileService.createCustomerAppointment(customerApplicationFormBean);
+		return null;
 	}
 
 }

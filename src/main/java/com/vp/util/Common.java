@@ -12,8 +12,7 @@ public class Common  {
 	
 	private boolean isValid;
 	
-	@Autowired
-	private HashSet<MessageCode> messageCode;
+	private HashSet<MessageCode> messageCode ;
 	
 	public boolean isValid() {
 		return isValid;
