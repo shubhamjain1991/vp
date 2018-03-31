@@ -111,3 +111,29 @@ ALTER TABLE `vp`.`service_providers`
     af_customer_id
   )
 );
+
+
+CREATE TABLE `user_appointment` (
+  `ua_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ua_customer_id` bigint(20) DEFAULT NULL,
+  `ua_sp_id` bigint(20) DEFAULT NULL,
+  `ua_af_id` bigint(20) DEFAULT NULL,
+  `ua_is_appointment_approved` enum('Yes','No') DEFAULT 'No',
+  `ua_is_client_notified` enum('Yes','No') DEFAULT 'No',
+  `ua_is_client_notifed_on_same_day` enum('Yes','No') DEFAULT 'No',
+  `ua_alloted_meeting_datetime` bigint(20) DEFAULT NULL,
+  `ua_created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ua_updated_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`ua_id`),
+  UNIQUE KEY `ua_M_unique_key` (`ua_customer_id`,`ua_sp_id`,`ua_alloted_meeting_datetime`),
+  UNIQUE KEY `ua_C_unique_key` (`ua_customer_id`,`ua_alloted_meeting_datetime`),
+  UNIQUE KEY `ua_S_unique_key` (`ua_sp_id`,`ua_alloted_meeting_datetime`),
+  KEY `fk_ua_application_form_id` (`ua_af_id`),
+  CONSTRAINT `fk_ua_Cusomer_id` FOREIGN KEY (`ua_customer_id`) REFERENCES `customer_profile` (`customer_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_ua_service_provider_id` FOREIGN KEY (`ua_sp_id`) REFERENCES `service_providers` (`sp_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_ua_application_form_id` FOREIGN KEY (`ua_af_id`) REFERENCES `application_form` (`af_id`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+
+
