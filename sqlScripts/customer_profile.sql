@@ -21,3 +21,15 @@ Last_Modified_on datetime not null,
 CONSTRAINT pk_customer_id PRIMARY KEY (customer_id),
 CONSTRAINT ck_CustMob_CustEmail unique KEY (customer_email , customer_mobile )
 );
+
+
+ALTER TABLE `vp`.`customer_profile`   
+  CHANGE `customer_mobile` `customer_mobile` VARCHAR(13) NULL,
+  CHANGE `isUid_validate` `is_uid_validate` ENUM('Yes','No') CHARSET utf8 COLLATE utf8_general_ci DEFAULT 'No'  NULL,
+  CHANGE `isMobile_validate` `is_mobile_validate` ENUM('Yes','No') CHARSET utf8 COLLATE utf8_general_ci DEFAULT 'No'  NULL,
+  CHANGE `isEmail_validate` `is_email_validate` ENUM('Yes','No') CHARSET utf8 COLLATE utf8_general_ci DEFAULT 'No'  NULL,
+  CHANGE `isActive` `is_active` ENUM('Yes','No') CHARSET utf8 COLLATE utf8_general_ci DEFAULT 'Yes'  NULL,
+  CHANGE `Gender` `gender` ENUM('Male','Female') CHARSET utf8 COLLATE utf8_general_ci NULL,
+  CHANGE `created_on` `created_on` TIMESTAMP NOT NULL,
+  CHANGE `Last_Modified_on` `last_modified_on` TIMESTAMP NOT NULL, 
+  DROP INDEX `ck_CustMob_CustEmail`;

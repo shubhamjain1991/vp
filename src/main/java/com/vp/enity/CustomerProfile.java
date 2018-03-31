@@ -2,12 +2,16 @@ package com.vp.enity;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -19,71 +23,68 @@ public class CustomerProfile implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="cp_id")
+	@Column(name="customer_id")
 	private Long cpId;
 	
-	@Column(name="cp_type")
+	@Column(name="customer_type")
 	private String cpType;
 	
-	@Column(name="cp_email")
+	@Column(name="customer_email")
 	private String cpEmail;
 	
-	@Column(name="cp_mobile")
+	@Column(name="customer_mobile")
 	private Long cpMobile;
 	
-	@Column(name="cp_first_name")
+	@Column(name="customer_first_name")
 	private String cpFirstName;
 	
-	@Column(name="cp_last_name")
+	@Column(name="customer_last_name")
 	private String cpLastName;
 	
-	@Column(name="cp_user_name")
+	@Column(name="customer_user_name")
 	private String cpUserName;
 	
-	@Column(name="cp_pwd")
+	@Column(name="customer_password")
 	private String cpPwd;
 	
-	@Column(name="cp_unique_id")
+	@Column(name="customer_unique_id")
 	private String cpUniqueId;
 	
-	@Column(name="cp_unique_id_type")
+	@Column(name="customer_unique_id_type")
 	private String cpUniqueIdType;
 	
-	@Column(name="cp_is_uid_valid")
+	@Column(name="is_uid_validate")
 	private String cpIsUidValid;
 	
-	@Column(name="cp_is_mobile_valid")
+	@Column(name="is_mobile_validate")
 	private String cpIsMobileValid;
 	
-	@Column(name="cp_is_email_valid")
+	@Column(name="is_email_validate")
 	private String cpIsEmailValid;
 	
-	@Column(name="cp_is_active")
+	@Column(name="is_active")
 	private String cpIsActive;
 	
-	@Column(name="cp_gender")
+	@Column(name="gender")
 	private String cpGender;
 	
-	@Column(name="cp_created_by")
-	private String cpCreatedBy;
+	@Column(name="created_on")
+	private Date cpCreatedOn;
 	
-	@Column(name="cp_created_date")
-	private Date cpCreatedDate;
-	
-	@Column(name="cp_updated_by")
-	private String cpUpdatedBy;
-	
-	@Column(name="cp_updated_date")
-	private Date cpUpdatedDate;
+	@Column(name="last_modified_on")
+	private Date cpLastModifiedOn;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customerProfile")
+	private List<AddressDetails> addresses;
+	
 	public CustomerProfile(){
 		super();
 	}
-	
+
 	public CustomerProfile(Long cpId, String cpType, String cpEmail, Long cpMobile, String cpFirstName,
 			String cpLastName, String cpUserName, String cpPwd, String cpUniqueId, String cpUniqueIdType,
 			String cpIsUidValid, String cpIsMobileValid, String cpIsEmailValid, String cpIsActive, String cpGender,
-			String cpCreatedBy, Date cpCreatedDate, String cpUpdatedBy, Date cpUpdatedDate) {
+			Date cpCreatedOn, Date cpLastModifiedOn) {
 		super();
 		this.cpId = cpId;
 		this.cpType = cpType;
@@ -100,10 +101,8 @@ public class CustomerProfile implements Serializable{
 		this.cpIsEmailValid = cpIsEmailValid;
 		this.cpIsActive = cpIsActive;
 		this.cpGender = cpGender;
-		this.cpCreatedBy = cpCreatedBy;
-		this.cpCreatedDate = cpCreatedDate;
-		this.cpUpdatedBy = cpUpdatedBy;
-		this.cpUpdatedDate = cpUpdatedDate;
+		this.cpCreatedOn = cpCreatedOn;
+		this.cpLastModifiedOn = cpLastModifiedOn;
 	}
 
 	public Long getCpId() {
@@ -235,35 +234,25 @@ public class CustomerProfile implements Serializable{
 		this.cpGender = cpGender;
 	}
 
-	public String getCpCreatedBy() {
-		return cpCreatedBy;
+
+	public Date getCpCreatedOn() {
+		return cpCreatedOn;
 	}
 
-	public void setCpCreatedBy(String cpCreatedBy) {
-		this.cpCreatedBy = cpCreatedBy;
+
+	public void setCpCreatedOn(Date cpCreatedOn) {
+		this.cpCreatedOn = cpCreatedOn;
 	}
 
-	public Date getCpCreatedDate() {
-		return cpCreatedDate;
+
+	public Date getCpLastModifiedOn() {
+		return cpLastModifiedOn;
 	}
 
-	public void setCpCreatedDate(Date cpCreatedDate) {
-		this.cpCreatedDate = cpCreatedDate;
+
+	public void setCpLastModifiedOn(Date cpLastModifiedOn) {
+		this.cpLastModifiedOn = cpLastModifiedOn;
 	}
 
-	public String getCpUpdatedBy() {
-		return cpUpdatedBy;
-	}
-
-	public void setCpUpdatedBy(String cpUpdatedBy) {
-		this.cpUpdatedBy = cpUpdatedBy;
-	}
-
-	public Date getCpUpdatedDate() {
-		return cpUpdatedDate;
-	}
-
-	public void setCpUpdatedDate(Date cpUpdatedDate) {
-		this.cpUpdatedDate = cpUpdatedDate;
-	}
+	
 }
