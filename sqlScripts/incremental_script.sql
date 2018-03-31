@@ -90,3 +90,24 @@ ALTER TABLE `vp`.`service_providers`
   CHANGE `sp_updated_date` `sp_updated_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP  NOT NULL,
   ADD CONSTRAINT `FK_SP_CUSTOMER_ID` FOREIGN KEY (`sp_customer_id`) REFERENCES `vp`.`customer_profile`(`customer_id`) ON UPDATE CASCADE ON DELETE CASCADE,
   ADD CONSTRAINT `FK_SP_ADDR_ID` FOREIGN KEY (`sp_addr_id`) REFERENCES `vp`.`address_details`(`address_id`) ON UPDATE CASCADE ON DELETE CASCADE;
+  
+  
+  CREATE TABLE application_form (
+  af_id BIGINT NOT NULL AUTO_INCREMENT,
+  af_customer_id BIGINT NOT NULL,
+  af_sp_id BIGINT NOT NULL,
+  af_requester_name VARCHAR (250) NOT NULL,
+  af_cause_of_meeting VARCHAR (1000) NOT NULL,
+  af_special_notes VARCHAR (1000),
+  af_time_duration_estimate INT,
+  af_req_meeting_datetime BIGINT,
+  af_created_date TIMESTAMP,
+  af_last_modified_date TIMESTAMP,
+  CONSTRAINT pk_application_Id PRIMARY KEY (af_id),
+  CONSTRAINT afk_Cusomer_id FOREIGN KEY (af_customer_id) REFERENCES customer_profile (customer_id) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_Service_Provider_id FOREIGN KEY (af_sp_id) REFERENCES service_providers (sp_id) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT af_meeting_datetime UNIQUE KEY (
+    af_req_meeting_datetime,
+    af_customer_id
+  )
+);
